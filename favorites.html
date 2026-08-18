@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Creked_Mods</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Сначала загружаем библиотеку с вашего компьютера -->
+    <script src="supabase.js"></script>
+    <!-- Затем загружаем вашу логику -->
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <!-- Шапка сайта -->
+    <header class="site-header">
+        <div class="logo"><a href="index.html">Creked<span>_</span>Mods</a></div>
+        <nav class="main-nav">
+            <a href="index.html">Главная</a>
+            <a href="mods.html">Моды</a>
+            <a href="favorites.html" class="active">Избранное</a>
+            <a href="discord.html">Дискорд</a>
+        </nav>
+        <a href="#" class="auth-btn btn-accent">Войти</a>
+    </header>
+
+    <!-- Основной контейнер страницы -->
+    <div class="main-container">
+        <!-- Боковая панель -->
+        <aside class="sidebar">
+            <div class="sidebar-title">// Навигация</div>
+            <ul class="category-list">
+                <li class="category-item"><a href="mods.html" class="category-link">Назад к модам</a></li>
+            </ul>
+        </aside>
+
+        <!-- Секция с контентом -->
+        <main class="content-section">
+            <div class="toolbar">
+                <h2 style="font-size: 16px; text-transform: uppercase; letter-spacing: 1px;">❤ Избранные модификации</h2>
+            </div>
+            
+            <!-- Идеально пустая сетка. Ни одна фантомная карточка здесь больше не появится -->
+            <div class="cards-grid" id="favorites-grid"></div>
+        </main>
+    </div>
+
+    <!-- Модальное окно авторизации -->
+<div id="auth-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <div class="modal-tabs">
+            <button id="tab-login" class="tab-btn active">Вход</button>
+            <button id="tab-register" class="tab-btn">Регистрация</button>
+        </div>
+        
+        <!-- Форма Входа -->
+        <form id="login-form" class="auth-form">
+            <div class="form-group"><input type="email" id="login-email" placeholder="Email" required autocomplete="username"></div>
+            <div class="form-group"><input type="password" id="login-password" placeholder="Пароль" required autocomplete="current-password"></div>
+            <a href="#" id="forgot-password-link" style="color: #666; font-size: 11px; text-transform: uppercase; text-decoration: none; display: inline-block; margin-top: -5px; transition: color 0.2s;">Забыли пароль?</a>
+            <button type="submit" class="auth-submit-btn">Войти</button>
+        </form>
+        
+        <!-- Форма Регистрации -->
+        <form id="register-form" class="auth-form hidden">
+            <div class="form-group"><input type="text" id="reg-username" placeholder="Имя пользователя" required autocomplete="nickname"></div>
+            <div class="form-group"><input type="email" id="reg-email" placeholder="Email" required autocomplete="email"></div>
+            <div class="form-group"><input type="password" id="reg-password" placeholder="Пароль (мин. 6 знаков)" required autocomplete="new-password"></div>
+            <div class="form-group"><input type="text" id="reg-secret" placeholder="Секретное слово (для восстановления)" required></div>
+            <button type="submit" class="auth-submit-btn">Создать аккаунт</button>
+        </form>
+
+        <!-- Форма Проверки секретного слова -->
+        <form id="recover-form" class="auth-form hidden">
+            <h2 style="font-size: 12px; text-transform: uppercase; color: #ff3333; margin-bottom: 5px;">// Восстановление доступа</h2>
+            <div class="form-group"><input type="email" id="recover-email" placeholder="Введите ваш Email" required></div>
+            <div class="form-group"><input type="text" id="recover-secret" placeholder="Ваше секретное слово" required></div>
+            <button type="submit" class="auth-submit-btn">Проверить данные</button>
+            <a href="#" id="back-to-login-link" style="color: #666; font-size: 11px; text-transform: uppercase; text-decoration: none; text-align: center; display: block; margin-top: 5px;">Назад ко входу</a>
+        </form>
+
+        <!-- НОВАЯ ФОРМА: Изменение пароля -->
+        <form id="reset-password-form" class="auth-form hidden">
+            <h2 style="font-size: 12px; text-transform: uppercase; color: #ff3333; margin-bottom: 5px;">// Новый пароль</h2>
+            <div class="form-group"><input type="password" id="reset-new-password" placeholder="Введите новый пароль (мин. 6 знаков)" required></div>
+            <button type="submit" class="auth-submit-btn">Сохранить пароль</button>
+        </form>
+    </div>
+</div>
+
+
+    <!-- Кастомное стильное окно подтверждения (Confirm) -->
+    <div id="confirm-modal" class="modal">
+        <div class="modal-content" style="max-width: 350px; text-align: center; padding: 30px 20px;">
+            <h3 id="confirm-modal-text" style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 25px; line-height: 1.5;">
+                Вы точно хотите выполнить это действие?
+            </h3>
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <button type="button" id="confirm-modal-yes" class="auth-submit-btn" style="padding: 10px 25px; flex: 1;">Да</button>
+                <button type="button" id="confirm-modal-no" class="filter-btn" style="padding: 10px 25px; flex: 1; margin: 0; border-color: #333;">Отмена</button>
+            </div>
+        </div>
+    </div>
+<!-- Кастомное окно уведомлений (Alert Modal) -->
+<div id="alert-modal" class="modal">
+    <div class="modal-content" style="max-width: 350px; text-align: center; padding: 30px 20px;">
+        <h3 id="alert-modal-text" style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 25px; line-height: 1.5; color: #ffffff;">
+            Уведомление
+        </h3>
+        <button type="button" id="alert-modal-close" class="auth-submit-btn" style="padding: 10px 35px; width: auto; margin: 0 auto; display: block;">ОК</button>
+    </div>
+</div>
+</body>
+</html>
