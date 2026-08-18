@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Creked_Mods</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Сначала загружаем библиотеку с вашего компьютера -->
+    <script src="supabase.js"></script>
+    <!-- Затем загружаем вашу логику -->
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <!-- Шапка сайта -->
+<header class="site-header">
+    <div class="logo"><a href="index.html">Creked<span>_</span>Mods</a></div>
+    <nav class="main-nav">
+        <!-- Кнопка Дискорд вернулась на свое законное место -->
+        <a href="index.html">Главная</a>
+        <a href="mods.html" class="active">Моды</a>
+        <a href="favorites.html">Избранное</a>
+        <a href="discord.html">Дискорд</a>
+    </nav>
+    <a href="#" class="auth-btn btn-accent">Войти</a>
+</header>
+
+
+
+    <!-- Основной контейнер -->
+    <div class="main-container">
+        <!-- Боковая панель -->
+        <aside class="sidebar">
+            <div class="sidebar-title">// Категория</div>
+<ul class="category-list">
+    <li class="category-item"><a href="mods.html" class="category-link active">All</a></li>
+    <li class="category-item"><a href="redux.html" class="category-link">Redux</a></li>
+    <li class="category-item"><a href="gunpack.html" class="category-link">Gunpack</a></li>
+    <li class="category-item"><a href="sounds.html" class="category-link">Sounds</a></li>
+    <li class="category-item"><a href="other.html" class="category-link">Other</a></li>
+</ul>
+
+            <button class="add-mod-trigger-btn">+ Добавить мод</button>
+        </aside>
+
+        <!-- Рабочая область -->
+        <main class="content-section">
+<div class="toolbar">
+    <input type="text" class="search-box" placeholder="Найти моды...">
+    
+    <!-- ВОЗВРАЩАЕМ ЭТОТ БЛОК КНОПОК -->
+    <div class="filter-buttons">
+        <button type="button" id="filter-new" class="filter-btn">[ Новое ]</button>
+        <button type="button" id="filter-popular" class="filter-btn active">[ Популярное ]</button>
+    </div>
+</div>
+
+
+            <!-- Сетка карточек (Сюда JS будет выводить как базовые, так и новые моды) -->
+            <div class="cards-grid"></div>
+        </main>
+    </div>
+
+    <!-- Модальное окно авторизации -->
+<div id="auth-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <div class="modal-tabs">
+            <button id="tab-login" class="tab-btn active">Вход</button>
+            <button id="tab-register" class="tab-btn">Регистрация</button>
+        </div>
+        
+        <!-- Форма Входа -->
+        <form id="login-form" class="auth-form">
+            <div class="form-group"><input type="email" id="login-email" placeholder="Email" required autocomplete="username"></div>
+            <div class="form-group"><input type="password" id="login-password" placeholder="Пароль" required autocomplete="current-password"></div>
+            <a href="#" id="forgot-password-link" style="color: #666; font-size: 11px; text-transform: uppercase; text-decoration: none; display: inline-block; margin-top: -5px; transition: color 0.2s;">Забыли пароль?</a>
+            <button type="submit" class="auth-submit-btn">Войти</button>
+        </form>
+        
+        <!-- Форма Регистрации -->
+        <form id="register-form" class="auth-form hidden">
+            <div class="form-group"><input type="text" id="reg-username" placeholder="Имя пользователя" required autocomplete="nickname"></div>
+            <div class="form-group"><input type="email" id="reg-email" placeholder="Email" required autocomplete="email"></div>
+            <div class="form-group"><input type="password" id="reg-password" placeholder="Пароль (мин. 6 знаков)" required autocomplete="new-password"></div>
+            <div class="form-group"><input type="text" id="reg-secret" placeholder="Секретное слово (для восстановления)" required></div>
+            <button type="submit" class="auth-submit-btn">Создать аккаунт</button>
+        </form>
+
+        <!-- Форма Проверки секретного слова -->
+        <form id="recover-form" class="auth-form hidden">
+            <h2 style="font-size: 12px; text-transform: uppercase; color: #ff3333; margin-bottom: 5px;">// Восстановление доступа</h2>
+            <div class="form-group"><input type="email" id="recover-email" placeholder="Введите ваш Email" required></div>
+            <div class="form-group"><input type="text" id="recover-secret" placeholder="Ваше секретное слово" required></div>
+            <button type="submit" class="auth-submit-btn">Проверить данные</button>
+            <a href="#" id="back-to-login-link" style="color: #666; font-size: 11px; text-transform: uppercase; text-decoration: none; text-align: center; display: block; margin-top: 5px;">Назад ко входу</a>
+        </form>
+
+        <!-- НОВАЯ ФОРМА: Изменение пароля -->
+        <form id="reset-password-form" class="auth-form hidden">
+            <h2 style="font-size: 12px; text-transform: uppercase; color: #ff3333; margin-bottom: 5px;">// Новый пароль</h2>
+            <div class="form-group"><input type="password" id="reset-new-password" placeholder="Введите новый пароль (мин. 6 знаков)" required></div>
+            <button type="submit" class="auth-submit-btn">Сохранить пароль</button>
+        </form>
+    </div>
+</div>
+
+
+
+
+    <!-- Модальное окно добавления модификации -->
+    <div id="add-mod-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-add-modal">&times;</span>
+            <h2 class="modal-title">// Добавить модификацию</h2>
+<form id="add-mod-form" class="auth-form">
+    <div class="form-group"><input type="text" id="mod-title" placeholder="Название мода" required></div>
+    <input type="text" id="mod-description" placeholder="Краткое описание мода" required maxlength="100">
+    <div class="form-group"><input type="text" id="mod-author" placeholder="Автор / Ваш Никнейм" required></div>
+<div class="form-group">
+    <!-- Кастомный стильный выпадающий список -->
+    <div class="custom-select" id="custom-select-block">
+        <div class="select-trigger">Выберите категорию <span class="arrow">▼</span></div>
+        <div class="select-options-box">
+            <div class="select-option-item" data-value="Redux">Redux</div>
+            <div class="select-option-item" data-value="Gunpack">Gunpack</div>
+            <div class="select-option-item" data-value="Sounds">Sounds</div>
+            <div class="select-option-item" data-value="Other">Other</div>
+        </div>
+    </div>
+    <!-- Скрытый инпут для передачи значения в JS -->
+    <input type="hidden" id="mod-category" required>
+</div>
+
+    <!-- Поле для простой ссылки на изображение -->
+<!-- Замените поле картинки на поле для YouTube во всех файлах -->
+<div class="form-group">
+    <input type="url" id="mod-youtube-url" placeholder="Ссылка на обзор YouTube (видео или Shorts)" required>
+</div>
+
+    <div class="form-group"><input type="url" id="mod-file-url" placeholder="Ссылка на файл мода" required></div>
+    <button type="submit" class="auth-submit-btn">Опубликовать</button>
+</form>
+
+        </div>
+    </div>
+    <!-- Кастомное окно подтверждения (Confirm Modal) -->
+<div id="confirm-modal" class="modal">
+    <div class="modal-content" style="max-width: 350px; text-align: center; padding: 30px 20px;">
+        <h3 id="confirm-modal-text" style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 25px; line-height: 1.5;">
+            Вы точно хотите выйти из аккаунта?
+        </h3>
+        <div style="display: flex; gap: 15px; justify-content: center;">
+            <button type="button" id="confirm-modal-yes" class="auth-submit-btn" style="padding: 10px 25px; flex: 1;">Да</button>
+            <button type="button" id="confirm-modal-no" class="filter-btn" style="padding: 10px 25px; flex: 1; margin: 0; border-color: #333;">Отмена</button>
+        </div>
+    </div>
+</div>
+<!-- Кастомное окно уведомлений (Alert Modal) -->
+<div id="alert-modal" class="modal">
+    <div class="modal-content" style="max-width: 350px; text-align: center; padding: 30px 20px;">
+        <h3 id="alert-modal-text" style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 25px; line-height: 1.5; color: #ffffff;">
+            Уведомление
+        </h3>
+        <button type="button" id="alert-modal-close" class="auth-submit-btn" style="padding: 10px 35px; width: auto; margin: 0 auto; display: block;">ОК</button>
+    </div>
+</div>
+</body>
+</html>
